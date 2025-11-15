@@ -4,6 +4,7 @@ import productRoutes from "./routes/product.js";
 import authRoutes from "./routes/auth.js";
 import { connectDatabse } from "./config/dbConnect.js";
 import errorMiddleware from "./middleware/erros.js";
+import vetRoutes from "./routes/vet.js";
 
 const app = express();
 dotenv.config({ path: "backend/config/config.env" });
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", authRoutes);
+app.use("/api/v1", vetRoutes);
 
 app.use(errorMiddleware);
 

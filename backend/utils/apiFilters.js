@@ -7,7 +7,7 @@ class APIFilters {
   search() {
     const keyword = this.queryStr.keyword
       ? {
-          name: {
+          tutorName: {
             $regex: this.queryStr.keyword,
             $options: "i",
           },
