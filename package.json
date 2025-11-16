@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node backend/app.js",
     "dev": "nodemon backend/app.js",
-    "seeder": "node backend/seed/seeder.js"
+    "prisma:generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "author": "",
   "license": "ISC",
