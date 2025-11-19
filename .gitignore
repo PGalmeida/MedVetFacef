@@ -3,3 +3,6 @@ backend/config/config.env
 /generated/prisma
 backend/.env
 /generated/prisma
+
+/frontend/node_modules
+/frontend/.env
