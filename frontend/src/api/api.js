@@ -142,20 +142,20 @@ export const vetAPI = {
 
 // Funções de veterinários/médicos (PostgreSQL)
 export const veterinaryAPI = {
-  getAll: () => api.get("/veterinaries"),
-  getById: (id) => api.get(`/veterinaries/${id}`),
-  create: (vetData) => api.post("/veterinaries", vetData),
-  update: (id, vetData) => api.put(`/veterinaries/${id}`, vetData),
-  delete: (id) => api.delete(`/veterinaries/${id}`),
+  getAll: () => api.get("/api/v1/veterinaries"),
+  getById: (id) => api.get(`/api/v1/veterinaries/${id}`),
+  create: (vetData) => api.post("/api/v1/admin/veterinaries", vetData),
+  update: (id, vetData) => api.put(`/api/v1/veterinaries/${id}`, vetData),
+  delete: (id) => api.delete(`/api/v1/veterinaries/${id}`),
 };
 
 // Funções de clínicas (PostgreSQL)
 export const clinicAPI = {
-  getAll: () => api.get("/clinics"),
-  getById: (id) => api.get(`/clinics/${id}`),
-  create: (clinicData) => api.post("/clinics", clinicData),
-  update: (id, clinicData) => api.put(`/clinics/${id}`, clinicData),
-  delete: (id) => api.delete(`/clinics/${id}`),
+  getAll: () => api.get("/api/v1/clinics"),
+  getById: (id) => api.get(`/api/v1/clinics/${id}`),
+  create: (clinicData) => api.post("/api/v1/clinics", clinicData),
+  update: (id, clinicData) => api.put(`/api/v1/clinics/${id}`, clinicData),
+  delete: (id) => api.delete(`/api/v1/clinics/${id}`),
 };
 
 export default api;

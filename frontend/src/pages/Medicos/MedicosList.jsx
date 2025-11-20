@@ -1,36 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "./Medicos.css";
-import { veterinaryAPI } from "../../api/api";
+import React, { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import "./Medicos.css"
+import { veterinaryAPI } from "../../api/api"
 
 function MedicosList() {
-  const [medicos, setMedicos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [medicos, setMedicos] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    fetchMedicos();
-  }, []);
+    fetchMedicos()
+  }, [])
 
   const fetchMedicos = async () => {
     try {
-      setLoading(true);
-      const response = await veterinaryAPI.getAll();
-      // O back-end retorna um array de veterinários
-      const vets = Array.isArray(response.data) ? response.data : [];
-      setMedicos(vets);
+      setLoading(true)
+      const response = await veterinaryAPI.getAll()
+      const vets = Array.isArray(response.data) ? response.data : []
+      setMedicos(vets)
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message;
+      const errorMessage = err.response?.data?.message || err.message
       if (errorMessage.includes("DATABASE_URL") || errorMessage.includes("PostgreSQL")) {
-        setError("Serviço de veterinários não disponível. Verifique a configuração do banco de dados.");
+        setError("Serviço de veterinários não disponível. Verifique a configuração do banco de dados.")
       } else {
-        setError("Erro ao carregar médicos. Tente novamente.");
+        setError("Erro ao carregar médicos. Tente novamente.")
       }
-      console.error(err);
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -38,7 +36,7 @@ function MedicosList() {
         <h1>Médicos Cadastrados</h1>
         <p>Carregando...</p>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -47,7 +45,7 @@ function MedicosList() {
         <h1>Médicos Cadastrados</h1>
         <p style={{ color: "red" }}>{error}</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -89,7 +87,7 @@ function MedicosList() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default MedicosList;
+export default MedicosList

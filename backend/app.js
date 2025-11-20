@@ -11,6 +11,7 @@ import chatbotRoutes from "./routes/chatbotRoutes.js";
 
 const app = express();
 dotenv.config({ path: "backend/config/config.env" });
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
 connectDatabase();
 
