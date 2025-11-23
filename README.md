@@ -244,27 +244,6 @@ Utilizado para dados relacionais de clínicas e veterinários:
   - `Clinic` - Clínicas veterinárias
   - `Veterinario` - Veterinários vinculados a clínicas
 
-**Schema Prisma:**
-```prisma
-model Clinic {
-  id         Int            @id @default(autoincrement())
-  name       String
-  address    String?
-  email      String
-  phone      String?
-  vets       Veterinario[]
-}
-
-model Veterinario {
-  id        Int     @id @default(autoincrement())
-  name      String
-  email     String
-  crmv      String
-  clinicId  Int
-  clinic    Clinic  @relation(fields: [clinicId], references: [id])
-}
-```
-
 ### Configuração
 
 ```env
@@ -383,44 +362,6 @@ npm start
 - **Teste da API:** http://localhost:3000/api/v1/test
 
 **Nota:** O React geralmente roda na porta 3000, mas se estiver ocupada, ele usará a próxima disponível (3001, 3002, etc).
-
----
-
-## 🧪 Testando a Instalação
-
-### Verificar Backend
-
-```bash
-# Teste se o servidor está rodando
-curl http://localhost:3000/api/v1/test
-
-# Resposta esperada:
-# {"message":"API v1 está funcionando!","timestamp":"..."}
-```
-
-### Verificar Frontend
-
-1. Abra o navegador em `http://localhost:3000`
-2. Você deve ver a página inicial
-3. Tente fazer login ou registro
-
-### Verificar Banco de Dados
-
-#### MongoDB
-```bash
-# Via MongoDB Compass ou CLI
-mongosh "sua-connection-string"
-use medvet
-show collections
-```
-
-#### PostgreSQL
-```bash
-# Via psql
-psql -U postgres -d medvet
-\dt  # Lista tabelas
-SELECT * FROM "Clinic";
-```
 
 ---
 
@@ -556,26 +497,11 @@ http://localhost:3000/api/v1
 #### Registrar Usuário
 - **Endpoint:** `POST /api/v1/register`
 - **Autenticação:** Não requerida
-- **Body:**
-```json
-{
-  "name": "João Silva",
-  "email": "joao@email.com",
-  "password": "senha123"
-}
-```
 - **Resposta:** Token JWT e dados do usuário
 
 #### Login
 - **Endpoint:** `POST /api/v1/login`
 - **Autenticação:** Não requerida
-- **Body:**
-```json
-{
-  "email": "joao@email.com",
-  "password": "senha123"
-}
-```
 - **Resposta:** Token JWT e dados do usuário
 
 #### Obter Usuário Atual
@@ -587,12 +513,10 @@ http://localhost:3000/api/v1
 #### Atualizar Perfil
 - **Endpoint:** `PUT /api/v1/me/update`
 - **Autenticação:** Requerida
-- **Body:** `{ "name": "Novo Nome" }`
 
 #### Atualizar Senha
 - **Endpoint:** `PUT /api/v1/password/update`
 - **Autenticação:** Requerida
-- **Body:** `{ "currentPassword": "senha123", "newPassword": "novaSenha456" }`
 
 ### Agendamentos/Consultas
 
@@ -612,31 +536,10 @@ http://localhost:3000/api/v1
 #### Criar Agendamento
 - **Endpoint:** `POST /api/v1/admin/vets`
 - **Autenticação:** Requerida (Admin)
-- **Body:**
-```json
-{
-  "tutorName": "Maria Santos",
-  "tutorEmail": "maria@email.com",
-  "tutorPhone": "11999999999",
-  "animalName": "Rex",
-  "species": "Cão",
-  "race": "Labrador",
-  "age": 3,
-  "sex": "Macho",
-  "dateConsult": "2024-12-25",
-  "hourConsult": "14:00",
-  "reasonConsult": "Consulta de rotina",
-  "symptoms": "Nenhum",
-  "status": "Agendada",
-  "clinicId": 1,
-  "veterinaryId": 1
-}
-```
 
 #### Atualizar Agendamento
 - **Endpoint:** `PUT /api/v1/vets/:id`
 - **Autenticação:** Requerida (Admin)
-- **Body:** Mesmo formato do criar
 
 #### Excluir Agendamento
 - **Endpoint:** `DELETE /api/v1/vets/:id`
@@ -656,7 +559,6 @@ http://localhost:3000/api/v1
 #### Criar Clínica
 - **Endpoint:** `POST /api/v1/clinics`
 - **Autenticação:** Requerida (Admin)
-- **Body:** `{ "name": "Nome", "address": "Endereço", "email": "email@email.com", "phone": "11999999999" }`
 
 #### Atualizar Clínica
 - **Endpoint:** `PUT /api/v1/clinics/:id`
@@ -679,7 +581,6 @@ http://localhost:3000/api/v1
 #### Criar Veterinário
 - **Endpoint:** `POST /api/v1/veterinaries`
 - **Autenticação:** Requerida (Admin)
-- **Body:** `{ "name": "Nome", "email": "email@email.com", "crmv": "CRMV-SP-12345", "clinicId": 1 }`
 
 #### Atualizar Veterinário
 - **Endpoint:** `PUT /api/v1/veterinaries/:id`
@@ -694,61 +595,10 @@ http://localhost:3000/api/v1
 #### Enviar Mensagem
 - **Endpoint:** `POST /api/v1/chatbot`
 - **Autenticação:** Não requerida
-- **Body:**
-```json
-{
-  "message": "Meu cachorro está vomitando",
-  "sessionId": "session_1234567890"
-}
-```
-- **Resposta:**
-```json
-{
-  "user": "Meu cachorro está vomitando",
-  "bot": "Vômito em pets pode ter várias causas..."
-}
-```
 
 #### Verificar Quota OpenAI
 - **Endpoint:** `GET /api/v1/chatbot/quota`
 - **Autenticação:** Não requerida
-- **Resposta:** `{ "hasQuota": true, "questions": [...] }`
-
----
-
-## 📝 Exemplos de Requisições
-
-### Exemplo: Login com cURL
-
-```bash
-curl -X POST http://localhost:3000/api/v1/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "usuario@email.com",
-    "password": "senha123"
-  }'
-```
-
-### Exemplo: Criar Agendamento (com autenticação)
-
-```bash
-curl -X POST http://localhost:3000/api/v1/admin/vets \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer SEU_TOKEN_JWT_AQUI" \
-  -d '{"tutorName": "João Silva", "tutorEmail": "joao@email.com", "animalName": "Rex", "species": "Cão", "age": 3, "sex": "Macho", "dateConsult": "2024-12-25", "hourConsult": "14:00", "reasonConsult": "Consulta", "symptoms": "Nenhum", "status": "Agendada", "clinicId": 1, "veterinaryId": 1}'
-```
-
-### Exemplo: Listar Agendamentos
-```bash
-curl -X GET "http://localhost:3000/api/v1/vets?keyword=João"
-```
-
-### Exemplo: Enviar Mensagem ao Chatbot
-```bash
-curl -X POST http://localhost:3000/api/v1/chatbot \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Como cuidar de um filhote?", "sessionId": "session_123"}'
-```
 
 ---
 
@@ -873,67 +723,6 @@ Serviço para gerenciamento de veterinários (PostgreSQL via Prisma):
 
 ---
 
-## 🎨 Componentes do Frontend
-
-### Páginas Principais
-
-#### Agendamentos
-- **AgendamentosList.jsx** - Lista todos os agendamentos ordenados por data
-- **NovoAgendamento.jsx** - Formulário para criar novo agendamento
-- **DetalhesAgendamento.jsx** - Visualização detalhada de um agendamento
-- **EditarAgendamento.jsx** - Formulário para editar agendamento existente
-
-#### Clínicas
-- **Clinics.jsx** - Lista todas as clínicas cadastradas
-- **ClinicForm.jsx** - Formulário para criar/editar clínica
-
-#### Veterinários
-- **MedicosList.jsx** - Lista todos os veterinários
-- **NovoMedico.jsx** - Formulário para cadastrar novo veterinário
-
-#### Chatbot
-- **Chatbot.jsx** - Interface do chatbot com IA
-- **Chatbot.css** - Estilos do chatbot
-
-#### Perfil
-- **Perfil.jsx** - Página de perfil do usuário
-- Permite atualizar nome e senha
-
-#### Animais e Tutores
-- **AnimaisList.jsx** - Lista de animais cadastrados
-- **NovoAnimal.jsx** - Formulário para cadastrar animal
-- **TutoresList.jsx** - Lista de tutores
-- **NovoTutor.jsx** - Formulário para cadastrar tutor
-
-### Componentes Reutilizáveis
-
-#### Layout
-- **Header.jsx** - Cabeçalho com navegação
-- **Footer.jsx** - Rodapé da aplicação
-
-#### Autenticação
-- **Login.jsx** - Página de login
-- **Register.jsx** - Página de registro
-
-#### Home
-- **Home.jsx** - Página inicial
-
-### API Client
-
-**api.js** - Cliente centralizado para requisições HTTP:
-
-- Configuração base do Axios
-- Interceptors para adicionar token automaticamente
-- Tratamento de erros 401 (redireciona para login)
-- APIs organizadas por módulo:
-  - `authAPI` - Autenticação
-  - `vetAPI` - Agendamentos
-  - `clinicAPI` - Clínicas
-  - `veterinaryAPI` - Veterinários
-  - `chatbotAPI` - Chatbot
-
----
-
 ## 📦 Dependências Principais
 
 ### Backend (package.json)
@@ -947,41 +736,6 @@ Principais dependências do React:
 - `axios` - Cliente HTTP
 - `bootstrap` - Framework CSS
 - `react-helmet` - Gerenciamento de meta tags
-
----
-
-## 🔄 Fluxo de Dados
-
-### Autenticação
-
-```
-1. Usuário faz login → POST /api/v1/login
-2. Backend valida credenciais → MongoDB
-3. Backend gera JWT → Retorna token
-4. Frontend armazena token → localStorage
-5. Frontend usa token → Header Authorization
-6. Backend valida token → Middleware isAuthenticated
-```
-
-### Chatbot
-
-```
-1. Usuário envia mensagem → POST /api/v1/chatbot
-2. Backend verifica quota OpenAI → GET /api/v1/chatbot/quota
-3. Se tem quota → Usa OpenAI GPT-3.5-turbo
-4. Se não tem quota → Usa IA baseada em regras
-5. Backend retorna resposta → Frontend exibe
-```
-
-### Agendamentos
-
-```
-1. Admin cria agendamento → POST /api/v1/admin/vets
-2. Backend valida dados → Mongoose schema
-3. Backend salva → MongoDB
-4. Frontend lista → GET /api/v1/vets
-5. Backend ordena por data → Retorna ordenado
-```
 
 ---
 
@@ -1367,124 +1121,6 @@ docker-compose down -v
 
 ---
 
-## 🧪 Testando a API
-
-### Com Postman
-
-1. Importe a collection (se disponível)
-2. Configure a variável `base_url` como `http://localhost:3000/api/v1`
-3. Faça login e copie o token
-4. Configure a variável `token` com o JWT recebido
-5. Use `{{token}}` nos headers das requisições autenticadas
-
-### Com cURL
-
-Veja exemplos na seção [Exemplos de Requisições](#exemplos-de-requisições)
-
-### Com JavaScript/Fetch
-```javascript
-// Login
-const response = await fetch('http://localhost:3000/api/v1/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email: 'usuario@email.com', password: 'senha123' })
-});
-const { token } = await response.json();
-
-// Requisição autenticada
-const agendamentos = await fetch('http://localhost:3000/api/v1/vets', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
-```
-
-### Com Axios (Frontend)
-```javascript
-import { authAPI, vetAPI } from './api/api';
-
-// Login
-const { data } = await authAPI.login({ email: 'usuario@email.com', password: 'senha123' });
-localStorage.setItem('token', data.token);
-
-// Listar agendamentos
-const { data } = await vetAPI.getAll();
-```
-
----
-
-## 💻 Exemplos de Código
-
-### Backend - Criar Controller
-
-```javascript
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import Vet from "../models/vet.js";
-
-export const getVets = catchAsyncErrors(async (req, res, next) => {
-  const vets = await Vet.find();
-  res.status(200).json({
-    success: true,
-    vets
-  });
-});
-```
-
-### Backend - Criar Route
-
-```javascript
-import express from "express";
-import { getVets } from "../controllers/vetControllers.js";
-import { isAuthenticated } from "../middleware/auth.js";
-
-const router = express.Router();
-
-router.get("/vets", getVets);
-router.post("/vets", isAuthenticated, createVet);
-
-export default router;
-```
-
-### Frontend - Criar Componente React
-```javascript
-import React, { useState, useEffect } from 'react';
-import { vetAPI } from '../api/api';
-
-const AgendamentosList = () => {
-  const [agendamentos, setAgendamentos] = useState([]);
-  
-  useEffect(() => {
-    const fetch = async () => {
-      const { data } = await vetAPI.getAll();
-      setAgendamentos(data.vets);
-    };
-    fetch();
-  }, []);
-
-  return (
-    <div>
-      {agendamentos.map(a => (
-        <div key={a._id}>
-          <h3>{a.animalName}</h3>
-          <p>Tutor: {a.tutorName}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
-```
-
-### Frontend - Usar Chatbot API
-```javascript
-import { chatbotAPI } from '../api/api';
-
-// Enviar mensagem
-const { data } = await chatbotAPI.sendMessage('mensagem', 'session_123');
-
-// Verificar quota
-const { data } = await chatbotAPI.checkQuota();
-```
-
----
-
 ## 📚 Estrutura de Código
 
 ### Padrões de Código
@@ -1504,106 +1140,6 @@ const { data } = await chatbotAPI.checkQuota();
 
 ---
 
-## 🚀 Deploy
-
-### Preparação para Produção
-
-1. **Configure variáveis de ambiente de produção**
-2. **Build do frontend:**
-   ```bash
-   cd frontend
-   npm run build
-   ```
-3. **Use Docker para produção:**
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
-
-### Variáveis de Ambiente de Produção
-Configure `NODE_ENV=production`, `DB_URI`, `DATABASE_URL`, `JWT_SECRET` e `OPENAI_API_KEY`
-
-### Checklist de Deploy
-
-- [ ] Variáveis de ambiente configuradas
-- [ ] Banco de dados configurado e acessível
-- [ ] Migrações do Prisma executadas
-- [ ] Build do frontend criado
-- [ ] CORS configurado para domínio de produção
-- [ ] SSL/HTTPS configurado
-- [ ] Logs configurados
-- [ ] Backup de banco de dados configurado
-
----
-
-## 🤝 Contribuindo
-
-### Como Contribuir
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
-### Padrões de Commit
-
-- `feat:` Nova funcionalidade
-- `fix:` Correção de bug
-- `docs:` Documentação
-- `style:` Formatação de código
-- `refactor:` Refatoração
-- `test:` Testes
-- `chore:` Tarefas de manutenção
-
----
-
-## 📖 Recursos Adicionais
-
-### Documentação das Tecnologias
-
-- **Node.js:** https://nodejs.org/docs
-- **Express.js:** https://expressjs.com/
-- **React:** https://react.dev/
-- **MongoDB:** https://www.mongodb.com/docs/
-- **PostgreSQL:** https://www.postgresql.org/docs/
-- **Prisma:** https://www.prisma.io/docs
-- **OpenAI API:** https://platform.openai.com/docs
-- **Mongoose:** https://mongoosejs.com/docs/
-- **JWT:** https://jwt.io/
-
-### Ferramentas Úteis
-
-- **MongoDB Compass** - Interface gráfica para MongoDB (https://www.mongodb.com/products/compass)
-- **PostgreSQL pgAdmin** - Interface gráfica para PostgreSQL (https://www.pgadmin.org/)
-- **Postman** - Teste de APIs (https://www.postman.com/)
-- **Docker Desktop** - Gerenciamento de containers (https://www.docker.com/products/docker-desktop)
-- **Prisma Studio** - Interface visual para banco de dados (execute: `npx prisma studio`)
-
-### Obter Chave OpenAI
-
-1. Acesse: https://platform.openai.com/
-2. Crie uma conta ou faça login
-3. Vá em "API Keys"
-4. Crie uma nova chave
-5. Copie e adicione no `config.env` como `OPENAI_API_KEY`
-
-### Configurar MongoDB Atlas (Cloud)
-
-1. Acesse: https://www.mongodb.com/cloud/atlas
-2. Crie uma conta gratuita
-3. Crie um cluster
-4. Obtenha a connection string
-5. Adicione no `config.env` como `DB_URI`
-
-### Configurar PostgreSQL Local
-
-1. Instale PostgreSQL: https://www.postgresql.org/download/
-2. Crie um banco de dados: `createdb medvet`
-3. Configure a connection string no `config.env`
-4. Execute migrações: `npm run prisma:migrate`
-
----
-
 ## 📝 Licença
 
 Este projeto é de uso livre para fins educacionais e pode ser adaptado conforme necessidade.
@@ -1613,31 +1149,3 @@ Este projeto é de uso livre para fins educacionais e pode ser adaptado conforme
 ## 👨‍💻 Desenvolvido por
 
 **Pedro Gomes de Almeida** e **Matheus de Castro Evangelista**
-
----
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-- Abra uma issue no repositório do projeto
-- Verifique a seção [Troubleshooting](#troubleshooting)
-- Consulte a documentação das tecnologias utilizadas
-
----
-
-## 📈 Roadmap Futuro
-
-- [ ] Sistema de notificações
-- [ ] Relatórios e estatísticas
-- [ ] Integração com sistemas de pagamento
-- [ ] App mobile (React Native)
-- [ ] Sistema de backup automático
-- [ ] Dashboard administrativo avançado
-- [ ] Exportação de dados (PDF/Excel)
-- [ ] Sistema de lembretes por email/SMS
-
----
-
-**Versão:** 1.0.0  
-**Última atualização:** Dezembro 2024  
-**Status:** Em desenvolvimento ativo
