@@ -10,8 +10,8 @@ WORKDIR /app
 # Copia os arquivos de dependências
 COPY package*.json ./
 
-# Instala as dependências
-RUN npm ci --only=production
+# Instala as dependências (usa npm install pois pode não ter package-lock.json)
+RUN npm install --omit=dev
 
 # Copia o schema do Prisma
 COPY backend/prisma ./backend/prisma

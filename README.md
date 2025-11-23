@@ -1140,7 +1140,7 @@ docker-compose down -v
 
 ---
 
-## 📝 Licença
+##  Licença
 
 Este projeto é de uso livre para fins educacionais e pode ser adaptado conforme necessidade.
 
